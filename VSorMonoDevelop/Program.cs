@@ -9,7 +9,7 @@ namespace VSorMonoDevelop
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length < 1)
             {
                 Console.WriteLine("Usage: {0} pathToSLN.sln", Process.GetCurrentProcess().ProcessName);
                 return;
@@ -26,16 +26,18 @@ namespace VSorMonoDevelop
                 Console.WriteLine("Error reading values from config file, ensure app setting keys 'vs' and 'monoDevelop' are set");
                 return;
             }
+
+            var slnPath = String.Join(" ", args);
             
             try
             {
 
-                string contents = File.ReadAllText(args[0]);
-                Process.Start(contents.Contains("MonoDevelopProperties") ? monoDevelopLocation : vsLocation, args[0]);
+                string contents = File.ReadAllText(slnPath);
+                Process.Start(contents.Contains("MonoDevelopProperties") ? monoDevelopLocation : vsLocation, "\"" + slnPath + "\"");
             }
             catch
             {
-                Console.WriteLine("Couldn't open file {0}", args[0]);
+                Console.WriteLine("Couldn't open file {0}", slnPath);
             }
         }
     }
